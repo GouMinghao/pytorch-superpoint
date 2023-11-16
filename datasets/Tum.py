@@ -6,7 +6,6 @@ Date: 2019/12/12
 """
 
 import numpy as np
-import tensorflow as tf
 import torch
 
 # from pathlib import Path

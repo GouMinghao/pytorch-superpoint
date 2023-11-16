@@ -17,6 +17,7 @@ from pathlib import Path
 import numpy as np
 from imageio import imread
 from tqdm import tqdm
+import cv2
 from tensorboardX import SummaryWriter
 
 ## torch
@@ -336,7 +337,11 @@ def export_detector_homoAdapt_gpu(config, output_dir, args):
         if task == "Kitti" or "Kitti_inh":
             scene_name = sample["scene_name"][0]
             os.makedirs(Path(save_output, scene_name), exist_ok=True)
-
+        img_path = Path(save_output, "vis_{}.jpg".format(filename))
+        np_img = cv2.cvtColor((sample["image_2D"][0,0].numpy() * 255).astype(np.uint8), cv2.COLOR_GRAY2BGR)
+        for pt in pts:
+            np_img = cv2.circle(np_img, (int(round(pt[0])), int(round(pt[1]))), 2, (255, 0, 0), 1, lineType=cv2.LINE_AA)
+        cv2.imwrite(str(img_path), np_img)
         path = Path(save_output, "{}.npz".format(filename))
         np.savez_compressed(path, **pred)
 
